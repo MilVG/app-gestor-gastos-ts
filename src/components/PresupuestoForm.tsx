@@ -1,22 +1,32 @@
-import { ChangeEvent, useMemo, useState } from "react"
+import { ChangeEvent, FormEvent, useMemo, useState } from "react"
+import { usePresupuesto } from "../hooks/usePresupuesto"
 
 
 export default function PresupuestoForm() {
 
   const [presupuesto, setPresupuesto] = useState(0)
 
+  const { state, dispatch } = usePresupuesto()
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-
+    e.preventDefault()
     setPresupuesto(e.target.valueAsNumber)
   }
+
   const validarInputPresupuesto = useMemo(() => {
-    //console.log(isNaN(presupuesto));
-
     return isNaN(presupuesto) || presupuesto <= 0;
-
   }, [presupuesto])
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    dispatch({ type: 'añadir-presupuesto', payload: { presupuesto: presupuesto } })
+
+  }
+
   return (
-    <form className="space-y-5 py-2 px-2">
+    <form
+      className="space-y-5 py-2 px-2"
+      onSubmit={handleSubmit}
+    >
       <div className=" flex flex-col space-y-5">
         <label htmlFor="presupuesto-input" className="text-4xl text-blue-600 font-bold text-center">
           Definir presupuesto
